@@ -1,0 +1,5 @@
+  const APP_ID = "02040090";
+  const APP_KEY = "56280d4d39f1842aa54883bead1dedf4";
+  const APP_URL = 'https://api.edamam.com/api/nutrition-details'
+
+https://groupmyfood.onrender.com

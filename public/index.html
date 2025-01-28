@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .login-container, .signup-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .toggle-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #4CAF50;
+            cursor: pointer;
+        }
+        .centered-link {
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+            margin-top: 20px; /* You can adjust the margin */
+            font-size: 16px;  /* Adjust the font size as needed */
+            color: #007bff;   /* Optional: Choose a color for the link */
+            cursor: pointer;
+            text-decoration: underline;
+          }
+
+          .centered-link:hover {
+            color: #0056b3;  /* Optional: Hover effect */
+          }
+
+    </style>
+</head>
+
+<body>
+    <div class="login-container" id="login-container">
+      <div style="text-align:center;">
+        <h1>Group My Food</h1>
+
+        <div class="content-wrapper">
+            <div class="logo-container">
+                <img src="./logo.png" style="width:60px; height:60px;"alt="Logo">
+            </div>
+            <div class="description">
+                <p>Welcome to our Recipe and Nutritional Information App.</p>
+            </div>
+        </div>
+      </div>
+        <h2>Login</h2>
+        <form action="/login" method="POST" onsubmit="return handleLogin(event)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <span class="toggle-link" onclick="toggleForm('signup')">Don't have an account? Sign up</span>
+      <!--  <a class="centered-link" href="reset-password.html">Forgot your password? Reset it</a> -->
+    </div>
+
+
+    <div class="signup-container" id="signup-container" style="display:none;">
+      <div style="text-align:center;">
+        <h1>Group My Food</h1>
+
+        <div class="content-wrapper">
+            <div class="logo-container">
+                <img src="./logo.png" style="width:60px; height:60px;"alt="Logo">
+            </div>
+            <div class="description">
+                <p>Welcome to our Recipe and Nutritional Information App.</p>
+            </div>
+        </div>
+      </div>
+        <h2>Sign Up</h2>
+        <form action="/signup" method="POST" onsubmit="return handleSignup(event)">
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" name="email" required />
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" name="password" required />
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <span class="toggle-link" onclick="toggleForm('login')">Already have an account? Log in</span>
+      <!--  <a class="centered-link" href="reset-password.html">Forgot your password? Reset it</a> -->
+    </div>
+
+    <script>
+        function toggleForm(formType) {
+            if (formType === 'signup') {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('signup-container').style.display = 'block';
+            } else {
+                document.getElementById('login-container').style.display = 'block';
+                document.getElementById('signup-container').style.display = 'none';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault(); // Prevent form submission
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Example login validation logic (you'll want to replace this with actual backend logic)
+            if (email && password) {
+                // Send login request to server
+                fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ email, password })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to the home page after successful login
+                        window.location.href = '/home';
+                    } else {
+                        alert('Invalid email or password.');
+                    }
+                })
+                .catch(() => alert('Server error during login.'));
+            } else {
+                alert('Please enter valid email and password.');
+            }
+        }
+
+        function handleSignup(event) {
+            event.preventDefault(); // Prevent form submission
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            // Example signup validation logic (you'll want to replace this with actual backend logic)
+            if (email && password) {
+                // Send signup request to server
+                fetch('/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ email, password })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to the home page after successful signup
+                        window.location.href = '/home';
+                    } else {
+                        alert('Sign-up failed. Please try again.');
+                    }
+                })
+                .catch(() => alert('Server error during signup.'));
+            } else {
+                alert('Please enter valid email and password.');
+            }
+        }
+    </script>
+    <footer></footer>
+</body>
+</html>

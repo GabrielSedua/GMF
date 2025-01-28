@@ -1,0 +1,170 @@
+/* General header styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #fff;
+    color: #333;
+    position: fixed; /* Fix the header at the top of the page */
+    top: 0; /* Stick it to the top */
+    left: 0;
+    width: 100%; /* Make sure it takes up the full width of the screen */
+    z-index: 1000; /* Ensure it stays on top of other content */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Optional shadow for some depth */
+    height: 70px; /* Adjust the height of the header to fit the hamburger */
+    border-top: 1px solid #0f0f0f;
+}
+
+/* Logo styles */
+header .logo img {
+    width: 150px; /* Adjust logo size */
+    height: auto;
+    z-index: 1010; /* Ensure the logo is on top */
+    position: relative; /* Position logo correctly */
+}
+
+/* Navigation styles */
+header nav ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: relative; /* Important for absolute positioning of the dropdown */
+}
+
+header nav ul li {
+    margin-left: 2rem;
+    position: relative; /* For dropdown positioning */
+}
+
+header nav ul li a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+    color: #f8a539; /* Change color on hover */
+}
+
+/* Dropdown menu (initially hidden) */
+header nav ul li .dropdown-menu {
+    display: none; /* Hide the dropdown by default */
+    position: absolute;
+    right: 0; /* Position the dropdown to the right */
+    top: 100%; /* Position it below the parent item */
+    background-color: #333;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    min-width: 150px; /* Set a minimum width for the dropdown */
+}
+
+header nav ul li:hover .dropdown-menu {
+    display: block; /* Show the dropdown when the parent item is hovered */
+}
+
+header nav ul li .dropdown-menu a {
+    padding: 1rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    display: block;
+}
+
+header nav ul li .dropdown-menu a:hover {
+    background-color: #444;
+}
+
+/* Sign Out Button in Dropdown */
+#signOutBtn {
+    padding: 1rem;
+    color: #fff;
+    background-color: #2bb235;
+    border: none;
+    text-align: center;
+    font-size: 0.5rem;
+    width: 100%;
+    cursor: pointer;
+}
+
+#signOutBtn:hover {
+    background-color: #e08e2625; /* Slightly darker hover color */
+}
+
+/* Hamburger menu for mobile view */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 24px;
+    width: 30px;
+    position: absolute; /* Position the hamburger menu absolutely */
+    right: 2rem; /* Move it to the right side of the page */
+    z-index: 1020; /* Ensure hamburger is above other elements */
+}
+
+.hamburger span {
+    width: 30px;
+    height: 4px;
+    background-color: #333;
+    border-radius: 5px;
+}
+
+/* Mobile adjustments for the nav and hamburger menu */
+@media (max-width: 768px) {
+    header {
+        height: 80px; /* Increase the header height for mobile */
+        padding: 1rem; /* Adjust padding for a better layout */
+    }
+
+    header nav ul {
+        display: none; /* Hide by default */
+        flex-direction: column;
+        margin-top: 1rem;
+        width: 100%;
+        background-color: #fff;
+    }
+
+    /* When the hamburger is clicked, show the menu */
+    #navLinks.active {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center the links horizontally */
+        align-items: center; /* Center the links vertically */
+        text-align: center;
+        width: 100%; /* Ensure it takes up full width */
+        position: absolute; /* Position it absolutely */
+        left: 0;
+        background-color: #fff;
+        z-index: 1005; /* Ensure the nav appears above other elements */
+    }
+
+    header nav ul li {
+        margin-left: 0;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    header nav ul li a {
+        padding: 1rem;
+        font-size: 1.2rem;
+        display: block;
+        width: 100%;
+    }
+
+    /* Display the hamburger menu on mobile */
+    .hamburger {
+        display: flex;
+    }
+}
+
+
+/* Add padding to the body to prevent content from hiding under the fixed header */
+body {
+    padding-top: 80px; /* Adjust based on header height */
+}

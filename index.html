@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .login-container, .signup-container, .reset-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .toggle-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #4CAF50;
+            cursor: pointer;
+        }
+
+        .reset-password {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+            text-align: center; /* Center text */
+            width: 100%; /* Make it take the full width */
+            display: block; /* Make it behave like a block element */
+            text-align: center; /* Center text horizontally */
+        }
+
+
+        .reset-password:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Form -->
+    <div class="login-container" id="login-container">
+      <div style="text-align:center;">
+        <h1>Group My Food</h1>
+
+        <div class="content-wrapper">
+            <div class="logo-container">
+                <img src="./logo.png" style="width:60px; height:60px;"alt="Logo">
+            </div>
+            <div class="description">
+                <p>Welcome to our Recipe and Nutritional Information App.</p>
+            </div>
+        </div>
+      </div>
+        <h2>Login</h2>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required />
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <span class="toggle-link" onclick="toggleForm('signup')">Don't have an account? Sign up</span>
+        <span class="reset-password" onclick="toggleForm('reset')">Reset Password</span>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="signup-container" id="signup-container" style="display:none;">
+      <div style="text-align:center;">
+        <h1>Group My Food</h1>
+
+        <div class="content-wrapper">
+            <div class="logo-container">
+                <img src="./logo.png" style="width:60px; height:60px;"alt="Logo">
+            </div>
+            <div class="description">
+                <p>Welcome to our Recipe and Nutritional Information App.</p>
+            </div>
+        </div>
+      </div>
+        <h2>Sign Up</h2>
+        <form onsubmit="handleSignup(event)">
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" name="email" required />
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" name="password" required />
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <span class="toggle-link" onclick="toggleForm('login')">Already have an account? Log in</span>
+        <span class="reset-password" onclick="toggleForm('reset')">Reset Password</span>
+    </div>
+
+    <!-- Password Reset Form -->
+    <div class="reset-container" id="reset-container" style="display:none;">
+      <div style="text-align:center;">
+        <h1>Group My Food</h1>
+
+        <div class="content-wrapper">
+            <div class="logo-container">
+                <img src="./logo.png" style="width:60px; height:60px;"alt="Logo">
+            </div>
+            <div class="description">
+                <p>Welcome to our Recipe and Nutritional Information App.</p>
+            </div>
+        </div>
+      </div>
+        <h2>Reset Password</h2>
+        <form onsubmit="handlePasswordReset(event)">
+            <div class="form-group">
+                <label for="reset-email">Email</label>
+                <input type="email" id="reset-email" name="email" required />
+            </div>
+            <button type="submit">Reset Password</button>
+        </form>
+        <span class="toggle-link" onclick="toggleForm('login')">Back to Login</span>
+    </div>
+
+    <!-- Include the Supabase client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const supabase = supabase.createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
+
+        function toggleForm(formType) {
+            // Hide all forms first
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('signup-container').style.display = 'none';
+            document.getElementById('reset-container').style.display = 'none';
+
+            // Show the selected form
+            if (formType === 'signup') {
+                document.getElementById('signup-container').style.display = 'block';
+            } else if (formType === 'reset') {
+                document.getElementById('reset-container').style.display = 'block';
+            } else {
+                document.getElementById('login-container').style.display = 'block';
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const { user, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                alert('Invalid email or password.');
+            } else {
+                window.location.href = '/home';
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            const { user, error } = await supabase.auth.signUp({ email, password });
+            if (error) {
+                alert(error.message);
+            } else {
+                alert('Success! Check your email to verify your account.');
+                window.location.href = '/verification';
+            }
+        }
+
+        async function handlePasswordReset(event) {
+            event.preventDefault();
+            const email = document.getElementById('reset-email').value;
+
+            const { error } = await supabase.auth.resetPasswordForEmail(email);
+            if (error) {
+                alert('Error resetting password: ' + error.message);
+            } else {
+                alert('A password reset link has been sent to your email.');
+            }
+        }
+    </script>
+</body>
+</html>

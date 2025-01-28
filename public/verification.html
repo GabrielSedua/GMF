@@ -1,0 +1,92 @@
+<!-- Verification Page (verification.html) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    .resend-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .resend-btn:hover {
+      background-color: #218838;
+    }
+
+    .note {
+      font-size: 14px;
+      color: #777;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Email Verification</h1>
+    <p>Please check your inbox for the verification link.</p>
+    <button class="resend-btn" onclick="resendEmail()">Resend Email</button>
+    <p class="note">If you haven't received an email, click the button above.</p>
+  </div>
+
+  <script>
+    async function resendEmail() {
+      const email = prompt("Enter your email to resend verification:");
+      if (!email) return;
+
+      try {
+        const response = await fetch('/resend-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+        alert(data.message);
+      } catch (error) {
+        alert("Something went wrong. Please try again.");
+      }
+    }
+  </script>
+</body>
+</html>

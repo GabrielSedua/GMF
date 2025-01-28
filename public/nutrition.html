@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="nav.css">
+    <title>Nutrition Analysis & Recipe Search</title>
+</head>
+
+<body>
+<header>
+    <div class="logo">
+        <img src="./assets/logo.png" alt="Logo" style="height: 60px; width: 60px;">
+    </div>
+    <nav>
+        <ul id="navLinks">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="recipe.html">Recipe</a></li>
+          <li><a href="nutrition.html">Nutrition</a></li>
+          <!-- Dropdown for user options -->
+          <li class="dropdown">
+              <a href="javascript:void(0);" class="dropbtn" id="userMenu">User</a>
+              <div class="dropdown-menu">
+                  <a href="javascript:void(0);" id="signOutBtn">Sign Out</a>
+              </div>
+          </li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
+
+<script type="text/javascript">
+  // Toggle the 'active' class for the mobile menu
+  function toggleMenu() {
+    const navLinks = document.getElementById("navLinks");
+    navLinks.classList.toggle("active");
+  }
+
+  // Add event listener to the hamburger icon
+  document.querySelector(".hamburger").addEventListener("click", toggleMenu);
+
+  // Handle sign out action
+  document.getElementById("signOutBtn").addEventListener("click", function() {
+    // Perform sign-out logic (e.g. clearing session, redirecting to login, etc.)
+    window.location.href = '/'; // Redirect to the login page (adjust as necessary)
+  });
+
+  // Fetch the email from localStorage (or session storage if used)
+  window.onload = function() {
+    const userEmail = localStorage.getItem("userEmail"); // Retrieve email from localStorage
+    if (userEmail) {
+      const emailPrefix = userEmail.split('@')[0];  // Get the part before the '@'
+      document.getElementById("userMenu").textContent = emailPrefix;  // Update the dropdown text
+    } else {
+      console.log("User is not logged in.");
+    }
+  };
+</script>
+<div class="main">
+<div class="searchHolder">
+        <h1>Nutritional Information</h1>
+        <form id="searchForm" class="search-wrapper">
+            <input type="text" id="SearchItemNutrition" placeholder="Enter Food Item">
+            <button type="submit" id="SearchButton">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+        <p class="inputHelpBloc">
+            Please type the quantity (pcs, g, kg) and the product name for nutritional information (e.g. 100g chicken).
+        </p>
+    </div>
+    <div class="Results" id="resultsContainer">
+        <!-- The results will be displayed here -->
+    </div>
+
+</div>
+<!-- Edamam Badge (placed at the bottom of the page) -->
+<div id="edamam-badge" data-color="white"></div>
+<footer>
+
+      <script src="https://developer.edamam.com/attribution/badge.js"></script>
+    <script src="nutrition.js"></script>
+</footer>
+</body>
+</html>

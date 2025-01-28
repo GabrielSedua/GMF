@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="nav.css">
+    <title>Nutrition Analysis & Recipe Search</title>
+    <!-- Include Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.19.0/dist/umd/supabase.min.js"></script>
+
+    <style media="screen">
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .column {
+            padding-top: 10px;
+            display: block;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 20px;
+        }
+
+        .column img {
+            margin-right: 10px;
+        }
+
+        /* Main Content Layout */
+        .main {
+            flex-grow: 1;
+        }
+
+        .content-wrapper {
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+
+        .column {
+            width: 30%;
+            height: 76vh;
+        }
+
+        .left, .right {
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            overflow-y: auto;
+        }
+
+        .middle {
+            background-color: #e9e9e9;
+            border-radius: 10px;
+            height: 76vh;
+            overflow-y: scroll;
+        }
+
+        .middle::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-slide {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-item {
+            flex: 0 0 100%;
+            text-align: center;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .carousel-caption {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+        }
+
+        /* Footer badge styling */
+        #edamam-badge {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Mobile View: Stack columns vertically */
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .column {
+                width: 90%;
+                margin-bottom: 20px;
+            }
+
+            .left, .right {
+                background-color: #f4f4f4;
+                border-radius: 10px;
+                overflow-y: auto;
+            }
+
+            .middle {
+                background-color: #e9e9e9;
+                border-radius: 10px;
+                overflow-y: scroll;
+            }
+
+            .left {
+                order: 2;
+            }
+
+            .middle {
+                order: 1;
+            }
+
+            .right {
+                order: 3;
+            }
+        }
+
+        /* Style for adding recipes section */
+        .add-recipe-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .add-recipe-container input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .add-recipe-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-recipe-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .recipe-list {
+            margin-top: 20px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .recipe-list li {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .recipe-list a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .recipe-list a:hover {
+            text-decoration: underline;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 150px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        ul li img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        ul li button {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <div class="logo">
+        <img src="./assets/logo.png" alt="Logo" style="height: 60px; width: 60px;">
+    </div>
+    <nav>
+        <ul id="navLinks">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="recipe.html">Recipe</a></li>
+            <li><a href="nutrition.html">Nutrition</a></li>
+            <li class="dropdown">
+                <a href="javascript:void(0);" class="dropbtn" id="userMenu">User</a>
+                <div class="dropdown-menu">
+                    <a href="javascript:void(0);" id="signOutBtn">Sign Out</a>
+                </div>
+            </li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
+
+<script type="text/javascript">
+  // The toggleMenu function to toggle the 'active' class
+  function toggleMenu() {
+    const navLinks = document.getElementById("navLinks");
+    navLinks.classList.toggle("active");
+  }
+
+  // Add event listener to the hamburger icon
+  document.querySelector(".hamburger").addEventListener("click", toggleMenu);
+
+  // Handle sign out action
+  document.getElementById("signOutBtn").addEventListener("click", function() {
+    // Perform sign-out logic (e.g. clearing session, redirecting to login, etc.)
+    window.location.href = '/'; // Redirect to the login page (adjust as necessary)
+  });
+
+  // Fetch the email from session or localStorage (if logged in)
+  window.onload = function() {
+    const userEmail = localStorage.getItem("userEmail"); // Retrieve email from localStorage (or session)
+
+    if (userEmail) {
+      const emailPrefix = userEmail.split('@')[0];  // Get the part before the '@'
+      document.getElementById("userMenu").textContent = emailPrefix;  // Update the dropdown text
+    } else {
+      console.log("User is not logged in.");
+    }
+  };
+</script>
+
+<div class="main">
+    <div class="container">
+      <!-- Left Column Section -->
+        <div class="column left">
+          <h2>Share Your Recipe</h2>
+          <p>Have a delicious recipe you'd like to share? Add the link below!</p>
+          <button id="loadRecipesBtn">Load Recipes</button>
+          <!-- Add Recipe Form -->
+          <div class="add-recipe-container">
+              <button id="addRecipeBtn">Add Recipe</button>
+              <input type="url" id="recipeLink" placeholder="Enter recipe link here">
+          </div>
+          <!-- Recipe List -->
+          <ul class="recipe-list" id="recipeList"></ul>
+
+          <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.min.js"></script>
+                      <script type="module" src="script.js"></script>
+
+      </div>
+
+
+
+        <div class="column middle">
+            <div class="content-wrapper">
+                <h2>Group My Food</h2>
+                <div class="logo-container">
+                    <img src="./assets/logo.png" id="logo" alt="Logo">
+                </div>
+                <div class="description">
+                    <p>Welcome to our Recipe and Nutritional Information App.</p>
+                    <p>Here, you can search for delicious recipes and get detailed nutritional analysis of your favorite foods.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column right">
+    <div id="mainContent">
+        <h2>Your Recipes</h2>
+        <br>
+        <!-- Add Recipe Button and Input Field -->
+        <button id="addRecipeBtnRight">Add Recipe</button>
+        <input type="text" id="recipeLinkRight" placeholder="Enter Recipe Link"/>
+
+        <!-- Recipe List -->
+        <ul id="recipeListRight"></ul>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.min.js"></script>
+                    <script type="module" src="scripts_local.js"></script>
+    </div>
+</div>
+
+    </div>
+</div>
+<div id="edamam-badge" data-color="white"></div>
+
+<footer>
+    <script src="https://developer.edamam.com/attribution/badge.js"></script>
+</footer>
+</body>
+</html>
